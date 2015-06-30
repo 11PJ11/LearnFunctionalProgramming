@@ -8,7 +8,7 @@ let abs x =
     then -x
     else x
 
-let formatResult (name:string) (n:int) (f: int -> int) = 
+let formatResult name n f = 
     printf "The %s of %d is %d." name n (f(n))
 
 let formatAbs x =
