@@ -5,6 +5,8 @@ VisualStudioVersion = 14.0.22823.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{F2A71F9B-5D33-465A-A702-920D77279786}") = "LearnFunctionalProgramming", "LearnFunctionalProgramming\LearnFunctionalProgramming\LearnFunctionalProgramming.fsproj", "{831D36FD-1ADD-4E32-BB50-3D67DA30793C}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{4025144F-0665-4852-BE30-7387A5457FEF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
