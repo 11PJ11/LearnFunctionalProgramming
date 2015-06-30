@@ -23,6 +23,9 @@ let factorial n =
 let formatFactorial n =
     formatResult "factorial" n factorial
 
+let formatIncrement n = 
+    formatResult "increment" n (fun x -> x + 1)
+
 // Exercise 1
 let rec fib n = 
     match n with
