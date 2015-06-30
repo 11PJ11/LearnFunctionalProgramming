@@ -8,8 +8,11 @@ let abs x =
     then -x
     else x
 
+let formatResult (name:string) (n:int) (f: int -> int) = 
+    printf "The %s of %d is %d." name n (f(n))
+
 let formatAbs x =
-    printf "The absolute value of %d is %d." x (abs x)
+    formatResult "absolute value" x abs
 
 let factorial n = 
     let rec go (n, acc) = 
@@ -18,7 +21,7 @@ let factorial n =
     go (n, 1)
 
 let formatFactorial n =
-    printf "The factorial of %d is %d." n (factorial n)
+    formatResult "factorial" n factorial
 
 // Exercise 1
 let rec fib n = 
