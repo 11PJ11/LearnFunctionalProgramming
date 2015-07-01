@@ -26,10 +26,29 @@ let formatFactorial n =
 let formatIncrement n = 
     formatResult "increment" n (fun x -> x + 1)
 
-// Exercise 1
-let rec fib n = 
-    match n with
+// Exercise 2.1
+let rec fib = function
     | 0 -> 0
-    | x when x <= 2 -> 1
-    | _ -> (fib (n - 1)) + (fib (n - 2))
+    | 1 -> 1
+    | n -> fib(n - 1) + fib(n - 2)
 
+//POLIMORPHIC FUNCTIONS: Abstracting over types
+
+//Generic bynary search
+let binarySearch (aas:'a []) (key:'a) (gt:'a * 'a -> bool) :int =
+
+    let rec go (low: int, mid: int, high: int) :int =
+        if low > high then 
+            -mid - 1
+        else    
+            let mid2 = (low + high) / 2
+            let x = aas.[mid2]
+            let greater = gt(x, key)
+            if (not greater && not(gt(key, x))) then
+                mid2
+            elif greater then
+                go (low, mid2, mid2 - 1)
+            else 
+                go(mid2 + 1, mid2, high)
+
+    go(0,0, aas.Length)
