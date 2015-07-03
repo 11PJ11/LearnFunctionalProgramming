@@ -108,3 +108,11 @@ let uncurry (f: 'a -> 'b -> 'c) : 'a * 'b -> 'c =
 //      let inc = curry add 1;; //val inc : (int -> int)
 //      inc 2;;
 //      val it : int = 3
+
+//EXERCISE 2.6
+//Function composition: feeds the output of one function as the input of another function.
+//Usage example: let squaredInc = compose((fun x -> x*x), (fun x -> x + 1));; //val squaredInc : (int -> int)
+//               squaredInc 3;;
+//               val it : int = 16
+let compose ((f: 'b -> 'c) , (g: 'a -> 'b)) : 'a -> 'c =
+    fun x -> f(g(x))
