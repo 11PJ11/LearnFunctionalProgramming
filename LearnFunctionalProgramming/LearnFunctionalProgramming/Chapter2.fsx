@@ -1,7 +1,6 @@
 ﻿//---------------------
 // CHAPTER 2 
 //---------------------
-open System
 
 let abs x = 
     if x < 0 then -x
@@ -62,3 +61,10 @@ let isSorted (aas : 'a []) (gt : 'a * 'a -> bool) : bool =
             else                     
                 go (nextIdx, gt (aas.[curIdx], aas.[nextIdx]))
     go (0, true)
+
+//EXERCISE 2.3
+//e.g.: let hello = partial1 "hello " (fun x y -> x + y);;
+//      hello "world!"
+//output: val it : string = "hello world!"
+let partial1 (x: 'a) (f: 'a -> 'b -> 'c) :'b -> 'c =
+    f(x)
