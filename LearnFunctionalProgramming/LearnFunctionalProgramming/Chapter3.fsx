@@ -40,17 +40,26 @@ module dataStructures
         
         //EXERCISE 3.3
         //drops the first n elements from aas
-        static member drop(n:int, aas: FPList<'a>) :FPList<'a> =
-            let rec go(take: int, count: int, xs:FPList<'a>) =
-                if count = take
-                then xs
-                else 
-                    match xs with
-                    | Nil -> Nil
-                    | Cons(y, ys) -> go(take, count + 1, ys)
+        static member drop (n:int) (aas: FPList<'a>) :FPList<'a> =
+            let rec go(take: int) (count: int) (xs:FPList<'a>) =
+                match xs with
+                | Nil -> Nil
+                | Cons(y, ys) -> if count = take
+                                 then xs
+                                 else go take (count + 1) ys
             
-            go(n, 0, aas)
+            go n 0 aas
 
+        //EXERCISE 3.4
+        //removes elements from the prefix as long as they match the predicate
+        static member dropWhile (predicate: 'a -> bool) (aas: FPList<'a>) :FPList<'a> =
+            let rec go(pred: 'a -> bool, xs:FPList<'a>) =
+                match xs with
+                    | Nil -> Nil
+                    | Cons(y, ys) -> if pred y
+                                     then go(pred, ys)
+                                     else xs
+            go (predicate, aas)
 
     //EXERCISE 3.1
     let x = match FPList.apply([1;2;3;4;5]) with           
@@ -60,5 +69,7 @@ module dataStructures
             | Cons(h, t) -> h + FPList.sum(t)  
             | _ -> 101   
 
-    let l = FPList.apply [1;2;3;4;5]
-    let dropped = FPList.drop (1, l)
+    //TESTS
+    let l = FPList.apply [-1;-2;3;4;5]
+    let dropped = FPList.drop 1 l
+    let noNegativesInFront = FPList.dropWhile (fun x -> x < 0) l
