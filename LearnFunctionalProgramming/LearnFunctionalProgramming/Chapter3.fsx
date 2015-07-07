@@ -61,6 +61,11 @@ module dataStructures
                                      else xs
             go (predicate, aas)
 
+        //EXERCISE 3.5
+        static member setHead (newHead: 'a) (aas: FPList<'a>) :FPList<'a> =
+            let tail = FPList.drop 1 aas
+            Cons(newHead, tail)
+
     //EXERCISE 3.1
     let x = match FPList.apply([1;2;3;4;5]) with           
             | Cons(x, Cons(2, Cons(4, _))) -> x  
@@ -71,5 +76,6 @@ module dataStructures
 
     //TESTS
     let l = FPList.apply [-1;-2;3;4;5]
-    let dropped = FPList.drop 1 l
+    let dropped = FPList.drop 3 l
     let noNegativesInFront = FPList.dropWhile (fun x -> x < 0) l
+    let newL = FPList.setHead 9 l
