@@ -66,6 +66,11 @@ module dataStructures
             let tail = FPList.drop 1 aas
             Cons(newHead, tail)
 
+        static member append (l1: FPList<'a>) (l2: FPList<'a>) : FPList<'a> =
+            match l1 with
+                | Nil -> l2
+                | Cons(h, t) -> Cons(h, (FPList.append t l2))
+
     //EXERCISE 3.1
     let x = match FPList.apply([1;2;3;4;5]) with           
             | Cons(x, Cons(2, Cons(4, _))) -> x  
