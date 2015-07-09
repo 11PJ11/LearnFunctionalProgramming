@@ -14,7 +14,7 @@ module dataStructures
 
     //companion object
     type FPList =
-        static member foldRight ((l: FPList<'a>) , (z: 'a)) (f: 'a -> 'a -> 'a) :'a =
+        static member foldRight ((l: FPList<'a>) , (z: 'b)) (f: 'a -> 'b -> 'b) :'b =
             match l with
             | Nil -> z
             | Cons(x, xs) -> f x (FPList.foldRight(xs, z) f)
