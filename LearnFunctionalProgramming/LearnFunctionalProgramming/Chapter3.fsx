@@ -14,62 +14,70 @@ module dataStructures
 
     //companion object
     type FPList =
+        static member foldRight ((l: FPList<'a>) , (z: 'a)) (f: 'a -> 'a -> 'a) :'a =
+            match l with
+            | Nil -> z
+            | Cons(x, xs) -> f x (FPList.foldRight(xs, z) f)
 
         static member sum(ints: FPList<int>) :int=
-            match ints with
-            | Nil -> 0
-            | Cons(x, xs) -> x + FPList.sum(xs)
+            FPList.foldRight (ints, 0) (+)
 
         static member product(ds: FPList<double>) :double = 
-            match ds with
-            | Nil -> 1.0
-            | Cons(0.0, _) -> 0.0
-            | Cons(x, xs) -> x * (FPList.product xs)   
+            FPList.foldRight (ds, 1.0) (*)
 
         //This is like a factiry function that creates FPList<'a> given a list
-        static member apply(aas: 'a list) :FPList<'a>=
-            if (aas.IsEmpty) 
+        static member apply(l: 'a list) :FPList<'a>=
+            if (l.IsEmpty) 
             then Nil
-            else Cons(aas.Head, FPList.apply(aas.Tail))
+            else Cons(l.Head, FPList.apply(l.Tail))
 
         //EXERCISE 3.2
         static member tail(aas: FPList<'a>) :FPList<'a> =
             match aas with
             | Nil -> Nil
-            | Cons(x, xs) -> xs
+            | Cons(_, xs) -> xs
         
         //EXERCISE 3.3
         //drops the first n elements from aas
-        static member drop (n:int) (aas: FPList<'a>) :FPList<'a> =
+        static member drop (n:int) (l: FPList<'a>) :FPList<'a> =
             let rec go(take: int) (count: int) (xs:FPList<'a>) =
                 match xs with
                 | Nil -> Nil
-                | Cons(y, ys) -> if count = take
+                | Cons(_, ys) -> if count = take
                                  then xs
-                                 else go take (count + 1) ys
-            
-            go n 0 aas
+                                 else go take (count + 1) ys            
+            go n 0 l
 
         //EXERCISE 3.4
         //removes elements from the prefix as long as they match the predicate
-        static member dropWhile (predicate: 'a -> bool) (aas: FPList<'a>) :FPList<'a> =
+        static member dropWhile (predicate: 'a -> bool) (l: FPList<'a>) :FPList<'a> =
             let rec go(pred: 'a -> bool, xs:FPList<'a>) =
                 match xs with
-                    | Nil -> Nil
-                    | Cons(y, ys) -> if pred y
-                                     then go(pred, ys)
-                                     else xs
-            go (predicate, aas)
+                | Nil -> Nil
+                | Cons(y, ys) -> if pred y
+                                    then go(pred, ys)
+                                    else xs
+            go (predicate, l)
 
         //EXERCISE 3.5
-        static member setHead (newHead: 'a) (aas: FPList<'a>) :FPList<'a> =
-            let tail = FPList.drop 1 aas
+        static member setHead (newHead: 'a) (l: FPList<'a>) :FPList<'a> =
+            let tail = FPList.drop 1 l
             Cons(newHead, tail)
 
         static member append (l1: FPList<'a>) (l2: FPList<'a>) : FPList<'a> =
             match l1 with
-                | Nil -> l2
-                | Cons(h, t) -> Cons(h, (FPList.append t l2))
+            | Nil -> l2
+            | Cons(h, t) -> Cons(h, (FPList.append t l2))
+
+        //EXERCISE 3.6
+        static member dropLast (l: FPList<'a>) :FPList<'a> =
+            let rec go (aas: FPList<'a>) (res: FPList<'a>) :FPList<'a>= 
+                match aas with
+                | Nil -> Nil
+                | Cons(_, Nil) -> res
+                | Cons(h1, Cons(_, Nil)) -> Cons(h1, Nil)
+                | Cons(h, t) -> Cons(h, go t res)
+            go l Nil
 
     //EXERCISE 3.1
     let x = match FPList.apply([1;2;3;4;5]) with           
@@ -81,6 +89,10 @@ module dataStructures
 
     //TESTS
     let l = FPList.apply [-1;-2;3;4;5]
+    let summed = FPList.sum l
+    let multiplied = FPList.product (FPList.apply [2.0;3.0;4.0])
     let dropped = FPList.drop 3 l
     let noNegativesInFront = FPList.dropWhile (fun x -> x < 0) l
     let newL = FPList.setHead 9 l
+    let appended = FPList.append l newL
+    let inited = FPList.dropLast l
