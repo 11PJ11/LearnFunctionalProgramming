@@ -106,6 +106,10 @@ module dataStructures =
         static member lengthL (l: FPList<'a>) : int = 
             FPList.foldLeft (l,0) (fun (acc, _) -> acc + 1)
 
+        //EXERCISE 3.12
+        static member reverse (l: FPList<'a>) :FPList<'a> =
+            FPList.foldLeft (l, Nil) (fun (t, h) -> Cons(h, t))
+
     //EXERCISE 3.1
     let x = 
         match FPList.apply ([ 1; 2; 3; 4; 5 ]) with
@@ -116,8 +120,8 @@ module dataStructures =
         | _ -> 101
 
     //TESTS
-    let l = FPList.apply([1..100000])
-    let rSummed = FPList.sumR (FPList.apply [ 2; 3; 4 ])
+    let l = FPList.apply([1..50000])
+    let rSummed = FPList.sumR (FPList.apply [ -2; -3; 4 ])
     let lSummed = FPList.sumL l
     let rMultiplied = FPList.productR (FPList.apply [ 2.0; 3.0; 4.0 ])
     let lMultiplied = FPList.productL (FPList.apply [ 2.0; 3.0; 4.0 ])
@@ -126,6 +130,7 @@ module dataStructures =
     let newL = FPList.setHead 9 l
     let appended = FPList.append l newL
     let inited = FPList.dropLast l
-    let len = FPList.length l
+    //let len = FPList.length l;; stack overflow
     //let lenR = FPList.length (FPList.apply([1..50000]));; stack overflow
-    let lenL = FPList.lengthL (FPList.apply([1..10000000]));;
+    let lenL = FPList.lengthL (FPList.apply([1..100000]));;
+    let rev = FPList.reverse l
