@@ -123,6 +123,10 @@ module dataStructures =
             let revStringified = FPList.foldLeft (l, Nil) (fun (t, h) -> Cons(h.ToString(), t ) )
             FPList.reverse revStringified
 
+        //EXERCISE 3.18
+        static member map (l: FPList<'a>) (f: 'a -> 'b) :FPList<'b> =
+            FPList.reverse(FPList.foldLeft(l, Nil) (fun (t, h) -> Cons(f(h), t)))
+
     //EXERCISE 3.1
     let x = 
         match FPList.apply ([ 1; 2; 3; 4; 5 ]) with
@@ -151,3 +155,4 @@ module dataStructures =
     let flattened = FPList.flatten lls
     let incred = FPList.add1ToEach(FPList.apply([1..10]))
     let stringified = FPList.fromDoubleToString(FPList.apply([1.0;2.0;3.0]))
+    let incred1 = FPList.map (FPList.apply([1..10])) (fun x -> x + 1)
