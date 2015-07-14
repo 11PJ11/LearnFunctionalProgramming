@@ -127,6 +127,10 @@ module dataStructures =
         static member map (l: FPList<'a>) (f: 'a -> 'b) :FPList<'b> =
             FPList.reverse(FPList.foldLeft(l, Nil) (fun (t, h) -> Cons(f(h), t)))
 
+        //EXERCISE 3.19
+        static member filter (l: FPList<'a>) (f: 'a -> bool) :FPList<'a> =
+            FPList.reverse(FPList.foldLeft(l, Nil) (fun (t, h) -> if f(h) then Cons(h, t) else t))
+
     //EXERCISE 3.1
     let x = 
         match FPList.apply ([ 1; 2; 3; 4; 5 ]) with
@@ -134,7 +138,7 @@ module dataStructures =
         | Nil -> 42
         | Cons(x, Cons(y, Cons(3, Cons(4, _)))) -> x + y //this is matched x=1 y=2 
         | Cons(h, t) -> h + FPList.sumL (t)
-        | _ -> 101
+        //| _ -> 101 never matched
 
     //TESTS
     let l = FPList.apply([1..10])
@@ -156,3 +160,4 @@ module dataStructures =
     let incred = FPList.add1ToEach(FPList.apply([1..10]))
     let stringified = FPList.fromDoubleToString(FPList.apply([1.0;2.0;3.0]))
     let incred1 = FPList.map (FPList.apply([1..10])) (fun x -> x + 1)
+    let onlyEven = FPList.filter (FPList.apply([1..10])) (fun x -> x % 2 = 0)
