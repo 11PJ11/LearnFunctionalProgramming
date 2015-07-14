@@ -18,11 +18,11 @@ module dataStructures =
 
         //This is like a factory function that creates FPList<'a> given a list
         static member apply (l : 'a list) : FPList<'a> =
-            let rec go ((aas: 'a list), acc: 'b) (op: 'b * 'a -> 'b) : 'b =
+            let rec loop ((aas: 'a list), acc: 'b) (op: 'b * 'a -> 'b) : 'b =
                 match aas with
                 | [] -> acc
-                | h::t -> go (t, op(acc, h)) op
-            go (List.rev l , Nil) (fun (t, h) -> Cons(h, t))
+                | h::t -> loop (t, op(acc, h)) op
+            loop (List.rev l , Nil) (fun (t, h) -> Cons(h, t))
 
         //EXERCISE 3.2
         static member tail (aas : FPList<'a>) : FPList<'a> = 
@@ -33,25 +33,25 @@ module dataStructures =
         //EXERCISE 3.3
         //drops the first n elements from aas
         static member drop (n : int) (l : FPList<'a>) : FPList<'a> = 
-            let rec go (take : int) (count : int) (xs : FPList<'a>) = 
+            let rec loop (take : int) (count : int) (xs : FPList<'a>) = 
                 match xs with
                 | Nil -> Nil
                 | Cons(_, ys) -> 
                     if count = take then xs
-                    else go take (count + 1) ys
-            go n 0 l
+                    else loop take (count + 1) ys
+            loop n 0 l
 
         //EXERCISE 3.4
         //removes elements from the prefix as long as they match the predicate
         static member dropWhile (predicate : 'a -> bool) (l : FPList<'a>) : FPList<'a> = 
-            let rec go (pred : 'a -> bool, xs : FPList<'a>) = 
+            let rec loop (pred : 'a -> bool, xs : FPList<'a>) = 
                 match xs with
                 | Nil -> Nil
                 | Cons(y, ys) -> 
                     if pred y 
-                    then go (pred, ys)
+                    then loop (pred, ys)
                     else xs
-            go (predicate, l)
+            loop (predicate, l)
 
         //EXERCISE 3.5
         static member setHead (newHead : 'a) (l : FPList<'a>) : FPList<'a> = 
@@ -60,13 +60,13 @@ module dataStructures =
 
         //EXERCISE 3.6
         static member dropLast (l : FPList<'a>) : FPList<'a> = 
-            let rec go (aas : FPList<'a>) (res : FPList<'a>) : FPList<'a> = 
+            let rec loop (aas : FPList<'a>) (res : FPList<'a>) : FPList<'a> = 
                 match aas with
                 | Nil -> Nil
                 | Cons(_, Nil) -> res
                 | Cons(h1, Cons(_, Nil)) -> Cons(h1, Nil)
-                | Cons(h, t) -> Cons(h, go t res)
-            go l Nil
+                | Cons(h, t) -> Cons(h, loop t res)
+            loop l Nil
 
         static member foldRight ((l: FPList<'a>), (acc: 'b)) (op: 'a * 'b -> 'b) :'b = 
             match l with
@@ -147,7 +147,18 @@ module dataStructures =
                 | (Cons(h1,t1),Cons(h2,t2)) -> loop (t1, t2) (Cons(h1 + h2, acc))
                 | (_, _) -> acc
             FPList.reverse(loop (l1, l2) Nil)
-                    
+        
+        //EXERCISE 3.23
+        static member zip (l1: FPList<'a>) (l2: FPList<'b>) (op: 'a * 'b -> 'c) :FPList<'c> =
+            let rec loop (iis1, iis2) acc = 
+                match (iis1, iis2) with
+                | (Cons(h1,t1),Cons(h2,t2)) -> loop (t1, t2) (Cons( op(h1, h2), acc))
+                | (_, _) -> acc
+            FPList.reverse(loop (l1, l2) Nil)
+        
+        //EXERCISE 3.23.1
+        static member pairSumZip (l1: FPList<int>) (l2: FPList<int>) :FPList<int> =
+            FPList.zip l1 l2 (uncurry (+))
 
     //EXERCISE 3.1
     let x = 
@@ -182,3 +193,5 @@ module dataStructures =
     let flatMapped = FPList.flatMap (FPList.apply([1..10])) (fun i -> Cons(i, Cons(i,Nil)))
     let onlyOddFM = FPList.filterFM (FPList.apply([1..20])) (fun x -> x % 2 = 1)
     let pairSummed = FPList.pairSum (FPList.apply([1..3])) (FPList.apply([4..6]))
+    let zipSummed = FPList.pairSumZip (FPList.apply([1..3])) (FPList.apply([4..6]))
+    let zipped = FPList.zip (FPList.apply([1..3])) (FPList.apply(['a'..'c'])) (fun (i, c) -> (i, c))
