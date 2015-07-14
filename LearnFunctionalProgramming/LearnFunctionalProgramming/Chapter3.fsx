@@ -15,30 +15,6 @@ module dataStructures =
 
     //companion object
     type FPList = 
-        static member foldRight ((l: FPList<'a>), (acc: 'b)) (op: 'a * 'b -> 'b) :'b = 
-            match l with
-            | Nil -> acc
-            | Cons(x, xs) -> op(x, (FPList.foldRight (xs, acc) op))
-
-        //EXERCISE 3.10
-        static member foldLeft  ((l: FPList<'a>), (acc: 'b)) (op: 'b * 'a -> 'b) :'b =
-            match l with
-            | Nil -> acc
-            | Cons(x, xs) -> FPList.foldLeft (xs, op(acc, x)) op
-
-        //EXERCISE 3.11.1
-        static member sumL (ints : FPList<int>) : int = 
-            FPList.foldLeft (ints, 0) (uncurry (+))
-
-        //EXERCISE 3.11.2
-        static member productL (ds : FPList<double>) : double = 
-            FPList.foldLeft (ds, 1.0) (uncurry (*))
-
-        static member sumR (ints : FPList<int>) : int = 
-            FPList.foldRight (ints, 0) (uncurry (+))
-
-        static member productR (ds : FPList<double>) : double = 
-            FPList.foldRight (ds, 1.0) (uncurry (*))
 
         //This is like a factory function that creates FPList<'a> given a list
         static member apply (l : 'a list) : FPList<'a> =
@@ -82,10 +58,6 @@ module dataStructures =
             let tail = FPList.drop 1 l
             Cons(newHead, tail)
 
-        //EXERCISE 3.14
-        static member append (l1 : FPList<'a>) (l2 : FPList<'a>) : FPList<'a> = 
-            FPList.foldLeft(l1, l2) (fun (x, y) -> Cons(y, x))
-
         //EXERCISE 3.6
         static member dropLast (l : FPList<'a>) : FPList<'a> = 
             let rec go (aas : FPList<'a>) (res : FPList<'a>) : FPList<'a> = 
@@ -96,9 +68,34 @@ module dataStructures =
                 | Cons(h, t) -> Cons(h, go t res)
             go l Nil
 
+        static member foldRight ((l: FPList<'a>), (acc: 'b)) (op: 'a * 'b -> 'b) :'b = 
+            match l with
+            | Nil -> acc
+            | Cons(x, xs) -> op(x, (FPList.foldRight (xs, acc) op))
+
         //EXERCISE 3.9
         static member length (l : FPList<'a>) : int =
             FPList.foldRight (l, 0) (fun (_, acc) -> acc + 1)
+
+        //EXERCISE 3.10
+        static member foldLeft  ((l: FPList<'a>), (acc: 'b)) (op: 'b * 'a -> 'b) :'b =
+            match l with
+            | Nil -> acc
+            | Cons(x, xs) -> FPList.foldLeft (xs, op(acc, x)) op
+
+        //EXERCISE 3.11.1
+        static member sumL (ints : FPList<int>) : int = 
+            FPList.foldLeft (ints, 0) (uncurry (+))
+
+        //EXERCISE 3.11.2
+        static member productL (ds : FPList<double>) : double = 
+            FPList.foldLeft (ds, 1.0) (uncurry (*))
+
+        static member sumR (ints : FPList<int>) : int = 
+            FPList.foldRight (ints, 0) (uncurry (+))
+
+        static member productR (ds : FPList<double>) : double = 
+            FPList.foldRight (ds, 1.0) (uncurry (*))
 
         //EXERCISE 3.11.3
         static member lengthL (l: FPList<'a>) : int = 
@@ -107,6 +104,10 @@ module dataStructures =
         //EXERCISE 3.12
         static member reverse (l: FPList<'a>) :FPList<'a> =
             FPList.foldLeft (l, Nil) (fun (t, h) -> Cons(h, t))
+
+        //EXERCISE 3.14
+        static member append (l1 : FPList<'a>) (l2 : FPList<'a>) : FPList<'a> = 
+            FPList.foldLeft(l1, l2) (fun (x, y) -> Cons(y, x))
 
         //EXERCISE 3.15
         static member flatten (lls: FPList<FPList<'a>>) : FPList<'a> =
@@ -139,6 +140,15 @@ module dataStructures =
         static member filterFM (l: FPList<'a>) (f: 'a -> bool) :FPList<'a> =
             FPList.flatMap l (fun x -> if f(x) then Cons(x, Nil) else Nil)
 
+        //EXERCISE 3.22
+        static member pairSum (l1: FPList<int>) (l2: FPList<int>) :FPList<int> =
+            let rec loop (iis1, iis2) acc = 
+                match (iis1, iis2) with
+                | (Cons(h1,t1),Cons(h2,t2)) -> loop (t1, t2) (Cons(h1 + h2, acc))
+                | (_, _) -> acc
+            FPList.reverse(loop (l1, l2) Nil)
+                    
+
     //EXERCISE 3.1
     let x = 
         match FPList.apply ([ 1; 2; 3; 4; 5 ]) with
@@ -159,9 +169,9 @@ module dataStructures =
     let newL = FPList.setHead 9 l
     let appended = FPList.append l (FPList.apply([20..-1..11]))
     let inited = FPList.dropLast l
-    //let len = FPList.length l;; stack overflow
-    //let lenR = FPList.length (FPList.apply([1..50000]));; stack overflow
-    let lenL = FPList.lengthL (FPList.apply([1..100000]))
+    //let len = FPList.length l stack overflow
+    //let lenR = FPList.length (FPList.apply([1..50000])) stack overflow
+    //let lenL = FPList.lengthL (FPList.apply([1..100000])) long output
     let rev = FPList.reverse l
     let lls = Cons(Cons(1,Cons(2,Nil)),Cons(Cons(3,Cons(4,Nil)),Nil))
     let flattened = FPList.flatten lls
@@ -169,5 +179,6 @@ module dataStructures =
     let stringified = FPList.fromDoubleToString(FPList.apply([1.0;2.0;3.0]))
     let incred1 = FPList.map (FPList.apply([1..10])) (fun x -> x + 1)
     let onlyEven = FPList.filter (FPList.apply([1..10])) (fun x -> x % 2 = 0)
-    let flatMapped = FPList.flatMap (Cons(1,Cons(2,Cons(3,Nil)))) (fun i -> Cons(i, Cons(i,Nil)))
+    let flatMapped = FPList.flatMap (FPList.apply([1..10])) (fun i -> Cons(i, Cons(i,Nil)))
     let onlyOddFM = FPList.filterFM (FPList.apply([1..20])) (fun x -> x % 2 = 1)
+    let pairSummed = FPList.pairSum (FPList.apply([1..3])) (FPList.apply([4..6]))
