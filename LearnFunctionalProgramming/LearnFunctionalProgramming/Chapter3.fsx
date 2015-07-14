@@ -108,6 +108,11 @@ module dataStructures =
         static member reverse (l: FPList<'a>) :FPList<'a> =
             FPList.foldLeft (l, Nil) (fun (t, h) -> Cons(h, t))
 
+        //EXERCISE 3.15
+        static member flatten (lls: FPList<FPList<'a>>) : FPList<'a> =
+            let revFlattened = FPList.foldLeft (lls, Nil) (fun (x, y) -> FPList.append y x )
+            FPList.reverse revFlattened
+
     //EXERCISE 3.1
     let x = 
         match FPList.apply ([ 1; 2; 3; 4; 5 ]) with
@@ -132,3 +137,5 @@ module dataStructures =
     //let lenR = FPList.length (FPList.apply([1..50000]));; stack overflow
     let lenL = FPList.lengthL (FPList.apply([1..100000]))
     let rev = FPList.reverse l
+    let lls = Cons(Cons(1,Cons(2,Nil)),Cons(Cons(3,Cons(4,Nil)),Nil))
+    let flattened = FPList.flatten lls
