@@ -5,7 +5,6 @@
 
 open Chapter2.functions
 
-[<AutoOpen>]
 module dataStructures = 
     //Singly linked list
     //Named FPList to avoid Microsoft List
@@ -83,10 +82,9 @@ module dataStructures =
             let tail = FPList.drop 1 l
             Cons(newHead, tail)
 
+        //EXERCISE 3.14
         static member append (l1 : FPList<'a>) (l2 : FPList<'a>) : FPList<'a> = 
-            match l1 with
-            | Nil -> l2
-            | Cons(h, t) -> Cons(h, (FPList.append t l2))
+            FPList.foldLeft(l1, l2) (fun (x, y) -> Cons(y, x))
 
         //EXERCISE 3.6
         static member dropLast (l : FPList<'a>) : FPList<'a> = 
@@ -120,17 +118,17 @@ module dataStructures =
         | _ -> 101
 
     //TESTS
-    let l = FPList.apply([1..50000])
+    let l = FPList.apply([1..10])
     let rSummed = FPList.sumR (FPList.apply [ -2; -3; 4 ])
-    let lSummed = FPList.sumL l
+    let lSummed = FPList.sumL (FPList.apply([1..50000]))
     let rMultiplied = FPList.productR (FPList.apply [ 2.0; 3.0; 4.0 ])
     let lMultiplied = FPList.productL (FPList.apply [ 2.0; 3.0; 4.0 ])
     let dropped = FPList.drop 3 l
     let noNegativesInFront = FPList.dropWhile (fun x -> x < 0) l
     let newL = FPList.setHead 9 l
-    let appended = FPList.append l newL
+    let appended = FPList.append l (FPList.apply([20..-1..11]))
     let inited = FPList.dropLast l
     //let len = FPList.length l;; stack overflow
     //let lenR = FPList.length (FPList.apply([1..50000]));; stack overflow
-    let lenL = FPList.lengthL (FPList.apply([1..100000]));;
+    let lenL = FPList.lengthL (FPList.apply([1..100000]))
     let rev = FPList.reverse l
