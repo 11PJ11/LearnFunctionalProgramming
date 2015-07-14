@@ -135,6 +135,10 @@ module dataStructures =
         static member flatMap (l: FPList<'a>) (f: 'a -> FPList<'b>) :FPList<'b> =
             FPList.flatten( FPList.map l f)
 
+        //EXERCISE 3.21
+        static member filterFM (l: FPList<'a>) (f: 'a -> bool) :FPList<'a> =
+            FPList.flatMap l (fun x -> if f(x) then Cons(x, Nil) else Nil)
+
     //EXERCISE 3.1
     let x = 
         match FPList.apply ([ 1; 2; 3; 4; 5 ]) with
@@ -166,3 +170,4 @@ module dataStructures =
     let incred1 = FPList.map (FPList.apply([1..10])) (fun x -> x + 1)
     let onlyEven = FPList.filter (FPList.apply([1..10])) (fun x -> x % 2 = 0)
     let flatMapped = FPList.flatMap (Cons(1,Cons(2,Cons(3,Nil)))) (fun i -> Cons(i, Cons(i,Nil)))
+    let onlyOddFM = FPList.filterFM (FPList.apply([1..20])) (fun x -> x % 2 = 1)
